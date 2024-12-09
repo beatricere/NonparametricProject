@@ -2,7 +2,7 @@
 rm(list = ls())
 
 # Load the data
-data <- readRDS("..\\Data\\bacteremia_no_NAs.rds")  # funziona per tutti se la wd è settata giusta
+data <- readRDS("../Data/bacteremia_no_NAs.rds")  # funziona per tutti se la wd è settata giusta
 
 
 
