@@ -1,0 +1,6 @@
+# Config for the Deep Sparse Autoencoder script
+B: 10 # Number of different sample datasets and model trained
+n_epochs: 500 # Number of training epochs for a given model
+save_every_n_epochs: 250 # Save the model every N epochs
+latent_dim: 16 # Latent dimension of the autoencoder
+load_model_epoch: null # Load the model that was trained for N epochs - to train set it to null
