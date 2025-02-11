@@ -11,7 +11,7 @@ Giulia Elizabeth de Sanctis, Jacopo Lazzari, Beatrice Re <br>
 `Autoencoder.py` contains the architecture for the DSAE reproduced as faithfully as possible from the Massi et al. (2021) paper <br>
 `dsae.py` runs the autoencoder <br>
 `dsae_config.yaml` is the input file <br>
-`post_processing_dase.ipynb` imports the results from the DSAE and selects features for a varying delta <br>
+`post_processing_dsae.ipynb` imports the results from the DSAE and selects features for a varying delta <br>
 `other_models.ipynb` contains other attempted models such as random forest <br>
 ### R: <br>
 `fixing_NAs.R` cleans and imputes the datastet <br>
