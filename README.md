@@ -12,6 +12,7 @@ Giulia Elizabeth de Sanctis, Jacopo Lazzari, Beatrice Re <br>
 dsae.py runs the autoencoder <br>
 `dsae_config.yaml` is the input file <br>
 `post_processing_dase.ipynb` imports the results from the DSAE and selects features for a varying delta <br>
+`other_models.ipynb` contains other attempted models such as random forest 
 ### R: <br>
 `fixing_NAs.R` - cleans and imputes the datastet <br>
 `model_comparisons.R` - is the most important script, has all our classifiers and the code to run conformal prediction <br>
