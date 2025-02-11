@@ -9,24 +9,24 @@ data <- readRDS("../Data/bacteremia_no_NAs.rds")  # funziona per tutti se la wd 
 
 ## Con il codice di Vantini
 
-WBC <- data$wbc
+X <- data$neu # SCEGLIERE COVARIATA DI INTERESSE e sostituire tutti
 Bacteremia <- data$bacteremia
 
 # Creare i gruppi
-WBC1 <- WBC[Bacteremia == 1] # Pazienti con batteriemia
-WBC2 <- WBC[Bacteremia == 0] # Pazienti senza batteriemia
-n1 <- length(WBC1)
-n2 <- length(WBC2)
-n <- length(WBC)
+X1 <- X[Bacteremia == 1] # Pazienti con batteriemia
+X2 <- X[Bacteremia == 0] # Pazienti senza batteriemia
+n1 <- length(X1)
+n2 <- length(X2)
+n <- length(X)
 
 # Calcolare i ranghi
-ranks.WBC <- rank(WBC)
+ranks.X <- rank(X)
 
 # Somma dei ranghi per i due gruppi
-R1 <- sum(ranks.WBC[Bacteremia == 1])
+R1 <- sum(ranks.X[Bacteremia == 1])
 U1 <- R1 - n1 * (n1 + 1) / 2 # Numero di "vittorie" per il primo gruppo
 
-R2 <- sum(ranks.WBC[Bacteremia == 0])
+R2 <- sum(ranks.X[Bacteremia == 0])
 U2 <- R2 - n2 * (n2 + 1) / 2 # Numero di "vittorie" per il secondo gruppo
 
 # Verifica del numero di confronti
@@ -67,17 +67,17 @@ p.value <- 2 * sum(U1.sim >= U.star) / B
 cat("p-value:", p.value, "\n")
 
 # Trasformazione monotona non lineare
-WBC.exp <- -exp(-WBC)
-WBC1.exp <- -exp(-WBC1)
-WBC2.exp <- -exp(-WBC2)
+X.exp <- -exp(-X)
+X1.exp <- -exp(-X1)
+X2.exp <- -exp(-X2)
 
-plot(WBC, WBC.exp, col = Bacteremia + 1, main = "Trasformazione non lineare", xlab = "WBC", ylab = "WBC trasformato")
-boxplot(WBC, main = "Boxplot di WBC")
-boxplot(WBC.exp, main = "Boxplot di WBC trasformato")
+plot(X, X.exp, col = Bacteremia + 1, main = "Trasformazione non lineare", xlab = "X", ylab = "X trasformato")
+boxplot(X, main = "Boxplot di X")
+boxplot(X.exp, main = "Boxplot di X trasformato")
 
 # Ripetere i calcoli con la trasformazione
-ranks.WBC.exp <- rank(WBC.exp)
-R1.exp <- sum(ranks.WBC.exp[Bacteremia == 1])
+ranks.X.exp <- rank(X.exp)
+R1.exp <- sum(ranks.X.exp[Bacteremia == 1])
 U1.exp <- R1.exp - n1 * (n1 + 1) / 2
 
 U.star.exp <- n1 * n2 / 2 + abs(U1.exp - n1 * n2 / 2)
@@ -87,8 +87,8 @@ p.value.exp <- 2 * sum(U1.sim >= U.star.exp) / B
 cat("p-value con trasformazione:", p.value.exp, "\n")
 
 # Confronto con il t-test
-cat("t-test originale:", t.test(WBC1, WBC2)$p.value, "\n")
-cat("t-test trasformato:", t.test(WBC1.exp, WBC2.exp)$p.value, "\n")
+cat("t-test originale:", t.test(X1, X2)$p.value, "\n")
+cat("t-test trasformato:", t.test(X1.exp, X2.exp)$p.value, "\n")
 
 
 
@@ -122,19 +122,19 @@ mann_whitney_mc <- function(group1, group2, B = 100000, seed = 08122024) {
 
 # Analisi per femmine
 cat("Analisi per femmine:\n")
-WBC_female_1 <- data_female$wbc[data_female$bacteremia == 1]
-WBC_female_0 <- data_female$wbc[data_female$bacteremia == 0]
+X_female_1 <- data_female$neu[data_female$bacteremia == 1]
+X_female_0 <- data_female$neu[data_female$bacteremia == 0]
 
-result_female <- mann_whitney_mc(WBC_female_1, WBC_female_0)
+result_female <- mann_whitney_mc(X_female_1, X_female_0)
 cat("U1:", result_female$U1, "\n")
 cat("p-value:", result_female$p.value, "\n")
 
 # Analisi per maschi
 cat("\nAnalisi per maschi:\n")
-WBC_male_1 <- data_male$wbc[data_male$bacteremia == 1]
-WBC_male_0 <- data_male$wbc[data_male$bacteremia == 0]
+X_male_1 <- data_male$neu[data_male$bacteremia == 1]
+X_male_0 <- data_male$neu[data_male$bacteremia == 0]
 
-result_male <- mann_whitney_mc(WBC_male_1, WBC_male_0)
+result_male <- mann_whitney_mc(X_male_1, X_male_0)
 cat("U1:", result_male$U1, "\n")
 cat("p-value:", result_male$p.value, "\n")
 
@@ -146,22 +146,22 @@ cat("p-value:", result_male$p.value, "\n")
 set.seed(09122024)
 
 # Sottogruppi: pazienti con e senza batteriemia
-group1 <- data$wbc[data$bacteremia == 1]  # Pazienti con batteriemia
-group2 <- data$wbc[data$bacteremia == 0]  # Pazienti senza batteriemia
+group1 <- data$neu[data$bacteremia == 1]  # Pazienti con batteriemia
+group2 <- data$neu[data$bacteremia == 0]  # Pazienti senza batteriemia
 
 # Wilcoxon Rank Sum Test (Mann-Whitney U-Test)
 test_result <- wilcox.test(group1, group2, paired = FALSE) # paired = TRUE sarebbe per dati accoppiati
 print(test_result)
 
 # Comando equivalente più sintetico
-test_result <- wilcox.test(wbc ~ bacteremia, data = data)
+test_result <- wilcox.test(neu ~ bacteremia, data = data, alternative = "less")
 print(test_result)
 
 # Interpretazione
 if (test_result$p.value < 0.05) {
-  cat("I livelli di WBC differiscono significativamente tra i pazienti con e senza batteriemia (p =", test_result$p.value, ")\n")
+  cat("I livelli di X differiscono significativamente tra i pazienti con e senza batteriemia (p =", test_result$p.value, ")\n")
 } else {
-  cat("Non ci sono differenze significative nei livelli di WBC tra i pazienti con e senza batteriemia (p =", test_result$p.value, ")\n")
+  cat("Non ci sono differenze significative nei livelli di X tra i pazienti con e senza batteriemia (p =", test_result$p.value, ")\n")
 }
 
 
@@ -174,22 +174,22 @@ if (test_result$p.value < 0.05) {
 set.seed(09122024)
 
 # Sottogruppi: donne con e senza batteriemia
-group1 <- data_female$wbc[data_female$bacteremia == 1]  # Donne con batteriemia
-group2 <- data_female$wbc[data_female$bacteremia == 0]  # Donne senza batteriemia
+group1 <- data_female$neu[data_female$bacteremia == 1]  # Donne con batteriemia
+group2 <- data_female$neu[data_female$bacteremia == 0]  # Donne senza batteriemia
 
 # Wilcoxon Rank Sum Test (Mann-Whitney U-Test)
 test_result <- wilcox.test(group1, group2, paired = FALSE) # paired = TRUE sarebbe per dati accoppiati
 print(test_result)
 
 # Comando equivalente più sintetico
-test_result <- wilcox.test(wbc ~ bacteremia, data = data_female)
+test_result <- wilcox.test(neu ~ bacteremia, data = data_female, alternative = greater)
 print(test_result)
 
 # Interpretazione
 if (test_result$p.value < 0.05) {
-  cat("I livelli di WBC differiscono significativamente tra le donne con e senza batteriemia (p =", test_result$p.value, ")\n")
+  cat("I livelli di X differiscono significativamente tra le donne con e senza batteriemia (p =", test_result$p.value, ")\n")
 } else {
-  cat("Non ci sono differenze significative nei livelli di WBC tra le donne con e senza batteriemia (p =", test_result$p.value, ")\n")
+  cat("Non ci sono differenze significative nei livelli di X tra le donne con e senza batteriemia (p =", test_result$p.value, ")\n")
 }
 
 ## Maschi
@@ -197,20 +197,20 @@ if (test_result$p.value < 0.05) {
 set.seed(09122024)
 
 # Sottogruppi: uomini con e senza batteriemia
-group1 <- data_male$wbc[data_male$bacteremia == 1]  # Uomini con batteriemia
-group2 <- data_male$wbc[data_male$bacteremia == 0]  # Uomini senza batteriemia
+group1 <- data_male$neu[data_male$bacteremia == 1]  # Uomini con batteriemia
+group2 <- data_male$neu[data_male$bacteremia == 0]  # Uomini senza batteriemia
 
 # Wilcoxon Rank Sum Test (Mann-Whitney U-Test)
 test_result <- wilcox.test(group1, group2, paired = FALSE) # paired = TRUE sarebbe per dati accoppiati
 print(test_result)
 
 # Comando equivalente più sintetico
-test_result <- wilcox.test(wbc ~ bacteremia, data = data_male)
+test_result <- wilcox.test(neu ~ bacteremia, data = data_male, alternative = greater)
 print(test_result)
 
 # Interpretazione
 if (test_result$p.value < 0.05) {
-  cat("I livelli di WBC differiscono significativamente tra gli uomini con e senza batteriemia (p =", test_result$p.value, ")\n")
+  cat("I livelli di X differiscono significativamente tra gli uomini con e senza batteriemia (p =", test_result$p.value, ")\n")
 } else {
-  cat("Non ci sono differenze significative nei livelli di WBC tra gli uomini con e senza batteriemia (p =", test_result$p.value, ")\n")
+  cat("Non ci sono differenze significative nei livelli di X tra gli uomini con e senza batteriemia (p =", test_result$p.value, ")\n")
 }
