@@ -22,4 +22,4 @@ Giulia Elizabeth de Sanctis, Jacopo Lazzari, Beatrice Re <br>
 ### Data: <br>
 `dataset_NAs_fixed.csv` is the csv of our complete dataset after NA computation, it is created with the `fixing_NAs.R` file <br>
 The train_test_val_data folder contains 3 files:<br>
-`test_data.csv`, `train_data.csv`, `val_data.csv` contains the split of our dataset used for training, testing and validation of all our models, these are created in the file stratified_sampling.R
+`test_data.csv`, `train_data.csv`, `val_data.csv` contains the split of our dataset used for training, testing and validation of all our models, these are created in the file `stratified_sampling.R`
